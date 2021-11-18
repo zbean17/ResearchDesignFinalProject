@@ -1,0 +1,28 @@
+---
+title: "FinalProjectRD"
+author: "Zoe Bean"
+date: "11/18/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+```{r import}
+
+make_data<-read_csv("Group+Projects+2021_November+18,+2021_11.53.csv", col_select = c(Q351,Q352,Q353,Q356,Q357,Q358,Q359,Q360,Q361,Q354_1,Q354_2,Q354_3,Q354_4)) #selects only our question columns
+make_data<-make_data[-c(1:2),] #remove rows not number data
+write_csv(make_data, "media_data.csv") #make new dataset csv
+
+media_data<-read_csv("media_data.csv") #now open csv so that all variables register as numbers and not characters
+remove(make_data) #remove extra open dataset
+
+
+```
+
+```{r}
+head(media_data)
+```

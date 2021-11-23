@@ -23,6 +23,22 @@ remove(make_data) #remove extra open dataset
 
 ```
 
-```{r}
-head(media_data)
+```{r newcolumn}
+# adjust reverse scored questions
+test<-media_data %>% mutate(Q354_2= case_when( Q354_2==5~1, Q354_2==4~2, Q354_2==2~4,Q354_2==3~3,  Q354_2==1~5), Q354_3= case_when( Q354_3==5~1, Q354_3==4~2,Q354_3==3~3, Q354_3==2~4, Q354_3==1~5))
+
+#add new columns
+media_data<-media_data %>% 
+  mutate(mood= case_when( 
+    !is.na(Q351) | !is.na(Q352) | !is.na(Q353) ~ 'neutral', #if 351, 352, 353 have answer post mood= neutral
+    !is.na(Q356) | !is.na(Q357) | !is.na(Q358) ~ 'stress', #if 356, 357, 358 have answer post mood= stress
+    !is.na(Q359) | !is.na(Q360) | !is.na(Q361) ~ 'happy' ),#if 359, 360, 361 have answer post mood= happy
+    score= Q354_1+Q354_2+Q354_3+Q354_4) #the score of the stress scale 
+
+```
+
+
+```{r analysis}
+
+
 ```

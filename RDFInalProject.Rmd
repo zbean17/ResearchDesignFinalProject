@@ -13,7 +13,7 @@ library(tidyverse)
 
 ```{r import}
 
-make_data<-read_csv("Group+Projects+2021_all_numeric.csv", col_select = c(Q13.1,Q13.2,Q13.3,Q14.1,Q14.2,Q14.3,Q15.1,Q15.2,Q15.3,Q16.1_1,Q16.1_2,	Q16.1_3,Q16.1_4)) #selects only our question columns
+make_data<-read_csv("Group+Projects+2021_all_numeric.csv", col_select = c(Q13.1,Q13.2,Q13.3,Q14.1,Q14.2,Q14.3,Q15.1,Q15.2,Q15.3,Q16.1_1,Q16.1_2,	Q16.1_3,Q16.1_4, Q18.6)) #selects only our question columns
 make_data<-make_data[-c(1:2),] #remove rows not number data
 write_csv(make_data, "media_data.csv") #make new dataset csv
 
@@ -33,13 +33,23 @@ media_data<-media_data %>%
     !is.na(Q14.1) | !is.na(Q14.2 | !is.na(Q14.3))  ~ 'stress', #if 14.1, 14.2, 14.3 have answer post mood= stress
     !is.na(Q15.1) | !is.na(Q15.2) | !is.na(Q15.3) ~ 'happy' ),#if 359, 360, 361 have answer post mood= happy
     
-    score= Q16.1_1+Q16.1_2+Q16.1_3+Q16.1_4) #the score of the stress scale 
+    score= Q16.1_1+Q16.1_2+Q16.1_3+Q16.1_4, #the score of the stress scale 
+    age=case_when( #age
+      Q18.6==1 ~'18-25',
+      Q18.6==2 ~'26-35',
+      Q18.6==3 ~'36-45',
+      Q18.6==4 ~'46-60',
+      Q18.6==5 ~'61+',
+    )
+    ) 
 
 media_data <- filter(media_data, rowSums(is.na(media_data)) != ncol(media_data)) #removing the rows that are all NAs
 ```
 
 
 ```{r analysis}
+
+#overall mood
 ggplot(data=media_data, aes(score)) +
   geom_bar() + facet_wrap(~mood)
 
@@ -47,4 +57,40 @@ ggplot(data = media_data, mapping = aes(x = mood, y = score)) +
     geom_boxplot()
 
 media_data%>%group_by(mood)%>%summarize(mean(score), median(score), min(score), max(score))
+
+#overall age
+ggplot(data=media_data, aes(score)) +
+  geom_bar() + facet_wrap(~age)
+
+ggplot(data = media_data, mapping = aes(x = age, y = score)) +
+    geom_boxplot()
+
+media_data%>%group_by(age)%>%summarize(mean(score), median(score), min(score), max(score))
+
+#age divided, stressed
+ggplot(data=filter(media_data, mood=='stress'), aes(score)) +
+  geom_bar() + facet_wrap(~age) +labs(title='stress')
+
+ggplot(data = filter(media_data, mood=='stress'), mapping = aes(x = age, y = score)) +
+  geom_boxplot() +labs(title='stress')
+
+media_data%>%filter(mood=='stress')%>%group_by(age)%>%summarize('stressed average score'=mean(score), median(score), min(score), max(score))
+
+#age divided,happy
+ggplot(data=filter(media_data, mood=='happy'), aes(score)) +
+  geom_bar() + facet_wrap(~age) +labs(title='happy')
+
+ggplot(data = filter(media_data, mood=='happy'), mapping = aes(x = age, y = score)) +
+  geom_boxplot() +labs(title='happy')
+
+media_data%>%filter(mood=='happy')%>%group_by(age)%>%summarize('happy average score'=mean(score), median(score), min(score), max(score))
+
+#age divided, neutral
+ggplot(data=filter(media_data, mood=='neutral'), aes(score)) +
+  geom_bar() + facet_wrap(~age) +labs(title='neutral')
+
+ggplot(data = filter(media_data, mood=='neutral'), mapping = aes(x = age, y = score)) +
+  geom_boxplot() +labs(title='neutral')
+
+media_data%>%filter(mood=='neutral')%>%group_by(age)%>%summarize('neutral average score'=mean(score), median(score), min(score), max(score))
 ```

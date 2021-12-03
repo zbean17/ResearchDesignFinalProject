@@ -40,6 +40,12 @@ media_data<-media_data %>%
       Q18.6==3 ~'36-45',
       Q18.6==4 ~'46-60',
       Q18.6==5 ~'61+',
+    ),
+    
+    color=case_when(
+      mood=='happy'~'green',
+      mood=='neutral'~'yellow',
+      mood=='stress'~'red'
     )
     ) 
 
@@ -52,45 +58,95 @@ media_data <- filter(media_data, rowSums(is.na(media_data)) != ncol(media_data))
 #overall mood
 ggplot(data=media_data, aes(score)) +
   geom_bar() + facet_wrap(~mood)
+ggsave("bar_mood.png", device="png", width=10, height=8, units="in",dpi=300)
 
 ggplot(data = media_data, mapping = aes(x = mood, y = score)) +
     geom_boxplot()
+ggsave("box_mood.png", device="png", width=10, height=8, units="in",dpi=300)
 
 media_data%>%group_by(mood)%>%summarize(mean(score), median(score), min(score), max(score))
 
 #overall age
-ggplot(data=media_data, aes(score)) +
+ggplot(data=media_data, aes(score, fill=mood)) +
   geom_bar() + facet_wrap(~age)
+ggsave("bar_age.png", device="png", width=10, height=8, units="in",dpi=300)
 
-ggplot(data = media_data, mapping = aes(x = age, y = score)) +
-    geom_boxplot()
+ggplot(data = media_data, mapping = aes(x = age, y = score)) +geom_boxplot()
+ggsave("box_age.png", device="png", width=10, height=8, units="in",dpi=300)
 
 media_data%>%group_by(age)%>%summarize(mean(score), median(score), min(score), max(score))
 
 #age divided, stressed
 ggplot(data=filter(media_data, mood=='stress'), aes(score)) +
   geom_bar() + facet_wrap(~age) +labs(title='stress')
+ggsave("bar_mood_stress.png", device="png", width=10, height=8, units="in",dpi=300)
 
 ggplot(data = filter(media_data, mood=='stress'), mapping = aes(x = age, y = score)) +
   geom_boxplot() +labs(title='stress')
+ggsave("box_mood_stress.png", device="png", width=10, height=8, units="in",dpi=300)
 
 media_data%>%filter(mood=='stress')%>%group_by(age)%>%summarize('stressed average score'=mean(score), median(score), min(score), max(score))
 
 #age divided,happy
 ggplot(data=filter(media_data, mood=='happy'), aes(score)) +
   geom_bar() + facet_wrap(~age) +labs(title='happy')
+ggsave("bar_mood_happy.png", device="png", width=10, height=8, units="in",dpi=300)
 
 ggplot(data = filter(media_data, mood=='happy'), mapping = aes(x = age, y = score)) +
   geom_boxplot() +labs(title='happy')
+ggsave("box_mood_happy.png", device="png", width=10, height=8, units="in",dpi=300)
 
 media_data%>%filter(mood=='happy')%>%group_by(age)%>%summarize('happy average score'=mean(score), median(score), min(score), max(score))
 
 #age divided, neutral
 ggplot(data=filter(media_data, mood=='neutral'), aes(score)) +
   geom_bar() + facet_wrap(~age) +labs(title='neutral')
+ggsave("bar_mood_neutral.png", device="png", width=10, height=8, units="in",dpi=300)
 
 ggplot(data = filter(media_data, mood=='neutral'), mapping = aes(x = age, y = score)) +
   geom_boxplot() +labs(title='neutral')
+ggsave("bix_mood_neutral.png", device="png", width=10, height=8, units="in",dpi=300)
 
 media_data%>%filter(mood=='neutral')%>%group_by(age)%>%summarize('neutral average score'=mean(score), median(score), min(score), max(score))
+
+#mood divided by age
+ggplot(data=filter(media_data, age=='18-25'), aes(score, fill=mood)) +
+  geom_bar() + facet_wrap(~mood) +labs(title='18-25')
+ggsave("bar_age_18_25.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data = filter(media_data, age=='18-25'), mapping = aes(x = mood, y = score, fill=mood)) +
+  geom_boxplot() +labs(title='18-25')
+ggsave("box_age_18_25.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data=filter(media_data, age=='26-35'), aes(score, fill=mood)) +
+  geom_bar() + facet_wrap(~mood) +labs(title='26-35')
+ggsave("bar_age_26_35.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data = filter(media_data, age=='26-35'), mapping = aes(x = mood, y = score, fill=mood)) +
+  geom_boxplot() +labs(title='26-35')
+ggsave("box_age_26_35.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data=filter(media_data, age=='36-45'), aes(score, fill=mood)) +
+  geom_bar() + facet_wrap(~mood) +labs(title='36-45')
+ggsave("bar_age_36_45.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data = filter(media_data, age=='36-45'), mapping = aes(x = mood, y = score, fill=mood)) +
+  geom_boxplot() +labs(title='36-45')
+ggsave("box_age_36_45.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data=filter(media_data, age=='46-60'), aes(score, fill=mood)) +
+  geom_bar() + facet_wrap(~mood) +labs(title='46-60')
+ggsave("bar_age_46_60.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data = filter(media_data, age=='46-60'), mapping = aes(x = mood, y = score, fill=mood)) +
+  geom_boxplot() +labs(title='46-60')
+ggsave("box_age_46_60.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data=filter(media_data, age=='61+'), aes(score, fill=mood)) +
+  geom_bar() + facet_wrap(~mood) +labs(title='61+')
+ggsave("bar_age_61plus.png", device="png", width=10, height=8, units="in",dpi=300)
+
+ggplot(data = filter(media_data, age=='61+'), mapping = aes(x = mood, y = score, fill=mood)) +
+  geom_boxplot() +labs(title='61+')
+ggsave("box_age_61plus.png", device="png", width=10, height=8, units="in",dpi=300)
 ```
